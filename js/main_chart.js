@@ -195,7 +195,7 @@ var domesticOption = {
                 + DomesticSchema[0].text + '：' + value[0] + '<br>'
                 + DomesticSchema[1].text + '：' + value[1] + '<br>'
                 + DomesticSchema[2].text + '：' + value[2] + '<br>';
-            content += '<iframe frameborder="0" width="500" height="300" src="./domestic.html?region=' + params.data.name + '" scrolling="no">';
+            content += '<iframe frameborder="0" width="500" height="350" src="./domestic.html?region=' + params.data.name + '" scrolling="no">';
             return content;
         }
     },
