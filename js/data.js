@@ -260,13 +260,13 @@ var convertGlobalMarketData = function(data) {
 var DomesticMarketList = ['Beijing', 'Tianjin', 'Shanghai', 'Hubei', 'Chongqing', 'Guangdong', 'Shenzhen'];
 
 var DomesticMarketData = [
-    ['Beijing', 551, 0.47, 1.245, 100],
-    ['Tianjin', 114, 1.6, 0.043, 99.11],
-    ['Shanghai', 310, 0.53, 1.640, 100],
-    ['Hubei', 138, 3.24, 13.338, 100],
-    ['Chongqing', 242, 1.06, 0.132, 70],
-    ['Guangdong', 242, 3.7, 4.795, 100],
-    ['Shenzhen', 635, 0.3, 3.152, 99.70]
+    ['Beijing', 551, 47, 1.245, 100],
+    ['Tianjin', 114, 160, 0.043, 99.11],
+    ['Shanghai', 310, 53, 1.640, 100],
+    ['Hubei', 138, 324, 13.338, 100],
+    ['Chongqing', 242, 106, 0.132, 70],
+    ['Guangdong', 242, 370, 4.795, 100],
+    ['Shenzhen', 635, 30, 3.152, 99.70]
 ];
 
 var DomesticSchema = [

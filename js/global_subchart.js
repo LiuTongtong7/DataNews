@@ -3,19 +3,6 @@
  */
 
 var echart = echarts.init(document.getElementById('global-subchart'), 'shine');
-var config = {
-    textStyle: {
-        fontFamily: 'HelveticaNeue, Helvetica, Arial, Hiragino Sans GB, sans-serif'
-    },
-    backgroundColor: '#ffffff',
-    padding: 20,
-    tooltip: {
-        padding: 10,
-        backgroundColor: '#ffffff',
-        borderColor: '#777',
-        borderWidth: 1
-    }
-};
 
 var getRequest = function() {
     var url = location.search;

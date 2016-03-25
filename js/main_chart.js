@@ -2,29 +2,17 @@
  * Created by liutongtong on 3/23/16.
  */
 
-var config = {
-    textStyle: {
-        fontFamily: 'HelveticaNeue, Helvetica, Arial, Hiragino Sans GB, sans-serif'
-    },
-    backgroundColor: '#ffffff',
-    padding: 20,
-    tooltip: {
-        padding: 10,
-        backgroundColor: '#ffffff',
-        borderColor: '#777',
-        borderWidth: 1
-    }
-};
-
 var globalOption = {
     backgroundColor: config.backgroundColor,
     textStyle: config.textStyle,
     title: {
-        text: 'Carbon Emission Trading: Who is on the stage?',
-        subtext: 'Global Situation',
+        text: config.title.text,
+        subtext: config.title.global_subtext,
         left: 'center',
         top: 'top',
-        padding: [config.padding, 0, 0, 0]
+        padding: [config.padding, 0, 0, 0],
+        textStyle: config.title.textStyle,
+        subtextStyle: config.title.subtextStyle
     },
     tooltip : {
         padding: config.tooltip.padding,
@@ -138,7 +126,7 @@ var itemStyle = {
 var getSeries = function(namelist) {
     var res = [];
     for (var i = 0; i < namelist.length; ++i) {
-        res.push({
+        var seriesItem = {
             name: namelist[i],
             data: convertDomesticMarketData(DomesticMarketData, namelist[i]),
             type: 'scatter',
@@ -146,41 +134,50 @@ var getSeries = function(namelist) {
             symbolSize: function (val) {
                 return Math.sqrt(val[2]) * 50;
             },
-            hoverAnimation: true
-        });
+            hoverAnimation: true,
+            label: {
+                normal: {
+                    formatter: '{b}',
+                    show: true,
+                    position: 'right',
+                    textStyle: {
+                        fontSize: 16,
+                        color: '#333'
+                    }
+                }
+            }
+        };
+        if (namelist[i]) {
+
+        }
+        res.push(seriesItem);
     }
     return res;
 };
 
 var domesticOption = {
     title: {
-        text: '主标题',
-        subtext: '副标题',
+        text: config.title.text,
+        subtext: config.title.domestic_subtext,
         left: 'center',
         top: 'top',
-        textStyle: {
-            color: '#fff',
-            fontWeight: 'bold'
-        },
-        subtextStyle: {
-            fontWeight: 'lighter'
-        },
-        padding: [20, 0, 0, 0]
+        padding: [config.padding, 0, 0, 0],
+        textStyle: config.title.textStyle,
+        subtextStyle: config.title.subtextStyle
     },
-    backgroundColor: '#333',
     legend: {
         top: 'bottom',
         data: DomesticMarketList,
         textStyle: {
-            color: '#fff',
             fontSize: 16
-        }
+        },
+        padding: config.padding
     },
     grid: {
-        x: '10%',
-        x2: '10%',
-        y: '18%',
-        y2: '10%'
+        x: '25%',
+        x2: '25%',
+        y: '25%',
+        y2: '20%'
     },
     tooltip: {
         padding: 10,
@@ -199,58 +196,28 @@ var domesticOption = {
     },
     xAxis: {
         type: 'value',
-        name: '企业数量',
+        name: 'Enterprises',
         nameGap: 16,
         nameTextStyle: {
-            color: '#fff',
             fontSize: 16
         },
         splitLine: {
             show: false
         },
-        axisLine: {
-            lineStyle: {
-                color: '#777'
-            }
-        },
-        axisTick: {
-            lineStyle: {
-                color: '#777'
-            }
-        },
         axisLabel: {
-            formatter: '{value}',
-            textStyle: {
-                color: '#fff'
-            }
+            formatter: '{value}'
         }
     },
     yAxis: {
         type: 'value',
-        name: '碳配额',
+        name: 'Carbon Allowance (MtCO2e)',
         nameLocation: 'end',
         nameGap: 20,
         nameTextStyle: {
-            color: '#fff',
             fontSize: 16
-        },
-        axisLine: {
-            lineStyle: {
-                color: '#777'
-            }
-        },
-        axisTick: {
-            lineStyle: {
-                color: '#777'
-            }
         },
         splitLine: {
             show: false
-        },
-        axisLabel: {
-            textStyle: {
-                color: '#fff'
-            }
         }
     },
     series: getSeries(DomesticMarketList)
