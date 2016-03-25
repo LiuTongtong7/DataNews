@@ -31,7 +31,7 @@ option = {
     color: ['#2b821d','#0098d9','#e6b600','#c12e34'],
     series : [
         {
-            name: 'Sectoral Coverage',
+            name: 'Carbon Emission Coverage',
             type: 'pie',
             radius : '70%',
             center : ['50%', '50%'],
@@ -42,6 +42,11 @@ option = {
                         fontSize: 14
                     },
                     show: true
+                }
+            },
+            itemStyle: {
+                normal: {
+                    opacity: 0.8
                 }
             },
             data: getData()

@@ -10,7 +10,6 @@ var globalOption = {
         subtext: config.title.global_subtext,
         left: 'center',
         top: 'top',
-        padding: [config.padding, 0, 0, 0],
         textStyle: config.title.textStyle,
         subtextStyle: config.title.subtextStyle
     },
@@ -36,8 +35,7 @@ var globalOption = {
             } else if (params.seriesName == 'GHG Emission') {
                 var content = '<div style="border-bottom: 1px solid rgba(0,0,0,.7); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
                     + params.seriesName + ': ' + params.data.value[2] + ' MtCO2e<br>';
-                content += '<iframe frameborder="0" width="400" height="250" src="./global.html?region=' + params.data.name + '" scrolling="no"' +
-                    ' allowTransparency="true">';
+                content += '<iframe frameborder="0" width="400" height="250" src="./global.html?region=' + params.data.name + '" scrolling="no">';
                 return content;
             }
         }
@@ -147,8 +145,10 @@ var getSeries = function(namelist) {
                 }
             }
         };
-        if (namelist[i]) {
-
+        if (namelist[i] == 'Beijing') {
+            seriesItem.label.normal.position = 'left';
+        } else if (namelist[i] == 'Hubei') {
+            seriesItem.label.normal.position = 'bottom';
         }
         res.push(seriesItem);
     }
@@ -156,12 +156,13 @@ var getSeries = function(namelist) {
 };
 
 var domesticOption = {
+    backgroundColor: config.backgroundColor,
+    textStyle: config.textStyle,
     title: {
         text: config.title.text,
         subtext: config.title.domestic_subtext,
         left: 'center',
         top: 'top',
-        padding: [config.padding, 0, 0, 0],
         textStyle: config.title.textStyle,
         subtextStyle: config.title.subtextStyle
     },
@@ -180,18 +181,22 @@ var domesticOption = {
         y2: '20%'
     },
     tooltip: {
-        padding: 10,
-        backgroundColor: '#222',
-        borderColor: '#777',
-        borderWidth: 1,
+        padding: config.tooltip.padding,
+        backgroundColor: config.tooltip.backgroundColor,
+        borderColor: config.tooltip.borderColor,
+        borderWidth: config.tooltip.borderWidth,
+        textStyle: {
+            color: '#333'
+        },
         formatter: function (params) {
             var value = params.value;
-            return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+            var content = '<div style="border-bottom: 1px solid rgba(0,0,0,.7); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
                 + params.name + '</div>'
                 + DomesticSchema[0].text + '：' + value[0] + '<br>'
                 + DomesticSchema[1].text + '：' + value[1] + '<br>'
-                + DomesticSchema[2].text + '：' + value[2] + '<br>'
-                + DomesticSchema[3].text + '：' + value[3] + '%<br>'
+                + DomesticSchema[2].text + '：' + value[2] + '<br>';
+            content += '<iframe frameborder="0" width="500" height="300" src="./domestic.html?region=' + params.data.name + '" scrolling="no">';
+            return content;
         }
     },
     xAxis: {
@@ -223,5 +228,5 @@ var domesticOption = {
     series: getSeries(DomesticMarketList)
 };
 
-echart.setOption(globalOption);
-// echart.setOption(domesticOption);
+// echart.setOption(globalOption);
+echart.setOption(domesticOption);

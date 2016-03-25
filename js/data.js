@@ -260,20 +260,19 @@ var convertGlobalMarketData = function(data) {
 var DomesticMarketList = ['Beijing', 'Tianjin', 'Shanghai', 'Hubei', 'Chongqing', 'Guangdong', 'Shenzhen'];
 
 var DomesticMarketData = [
-    ['Beijing', 551, 47, 1.245, 100],
-    ['Tianjin', 114, 160, 0.043, 99.11],
-    ['Shanghai', 310, 53, 1.640, 100],
-    ['Hubei', 138, 324, 13.338, 100],
-    ['Chongqing', 242, 106, 0.132, 70],
-    ['Guangdong', 242, 370, 4.795, 100],
-    ['Shenzhen', 635, 30, 3.152, 99.70]
+    ['Beijing', 551, 47, 1.245],
+    ['Tianjin', 114, 160, 0.043],
+    ['Shanghai', 310, 53, 1.640],
+    ['Hubei', 138, 324, 13.338],
+    ['Chongqing', 242, 106, 0.132],
+    ['Guangdong', 242, 370, 4.795],
+    ['Shenzhen', 635, 30, 3.152]
 ];
 
 var DomesticSchema = [
-    {name: '企业数量', index: 0, text: '企业数量'},
-    {name: '碳市场配额(亿吨)', index: 1, text: '碳市场配额(亿吨)'},
-    {name: '碳市场交易额(MtCO2e)', index: 2, text: '碳市场交易额(MtCO2e)'},
-    {name: '履约率', index: 3, text: '履约率'}
+    {name: 'Enterprises', index: 0, text: 'Enterprises'},
+    {name: 'Carbon Allowance(MtCO2e)', index: 1, text: 'Carbon Allowance(MtCO2e)'},
+    {name: 'Carbon Traded(MtCO2e)', index: 2, text: 'Carbon Traded(MtCO2e)'}
 ];
 
 var convertDomesticMarketData = function(data, name) {
@@ -362,7 +361,7 @@ var SectorList = [
     '国际组织'
 ];
 
-var CompositionData = {
+var DomesticCompositionData = {
     'Beijing': [0,4,185,46,0,25,11,42,23,35,79,2,11,2,1,53,11,13,8,0],
     'Tianjin': [0,4,80,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     'Shanghai': [0,0,228,35,0,6,315,0,3,2,0,0,0,0,0,0,0,0,0],
@@ -370,4 +369,130 @@ var CompositionData = {
     'Chongqing': [0,5,218,18,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
     'Guangdong': [0,0,157,85,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     'Shenzhen': [0,0,622,8,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0]
+};
+
+var bigLabel = {
+    normal: {
+        formatter: '{d}%',
+        position: 'inside',
+        textStyle: {
+            fontSize: 14
+        },
+        show: true
+    }
+};
+var smallLabel = {
+    normal: {
+        formatter: '{d}%',
+        // position: 'inside',
+        textStyle: {
+            fontSize: 14
+        },
+        show: true
+    }
+};
+
+var convertDomesticCompositionData = function(name) {
+    if (name in DomesticCompositionData) {
+        var res = [];
+        var legends = [];
+        var values = DomesticCompositionData[name];
+        var sum = eval(values.join('+'));
+
+        if (name == 'Beijing') {
+            var c = 0;
+            for (var i = 0; i < values.length; ++i) {
+                if (values[i] >= 25) {
+                    if (values[i] / sum > 0.07) {
+                        res.push({
+                            name: SectorList[i],
+                            value: values[i],
+                            label: bigLabel
+                        });
+                    } else {
+                        res.push({
+                            name: SectorList[i],
+                            value: values[i],
+                            label: smallLabel
+                        });
+                    }
+                    legends.push(SectorList[i]);
+                    c += values[i];
+                }
+            }
+            res.push({name: 'Other', value: sum - c, label: smallLabel});
+            legends.push('Other');
+            return [legends, res];
+        }
+
+        for (var i = 0; i < values.length; ++i) {
+            if (values[i] > 0) {
+                if (values[i] / sum > 0.1) {
+                    res.push({
+                        name: SectorList[i],
+                        value: values[i],
+                        label: bigLabel
+                    });
+                } else {
+                    res.push({
+                        name: SectorList[i],
+                        value: values[i],
+                        label: smallLabel
+                    });
+                }
+                legends.push(SectorList[i]);
+            }
+        }
+        return [legends, res];
+    } else {
+        return [[], []];
+    }
+};
+
+// 国内碳市场行业的履约率数据
+var ImplementData = {
+    'Beijing': 100,
+    'Tianjin': 99.11,
+    'Shanghai': 100,
+    'Hubei': 100,
+    'Chongqing': 70,
+    'Guangdong': 100,
+    'Shenzhen': 99.70
+};
+
+var convertImplementData = function(name) {
+    var value = ImplementData[name];
+    var res = [];
+    res.push({
+        name: 'Done',
+        value: value,
+        label: {
+            normal: {
+                show: true,
+                formatter: '{b}: {d}%',
+                position: 'center',
+                textStyle: {
+                    fontSize: 20,
+                    fontWeight: 'bold'
+                }
+            }
+        },
+        itemStyle: {
+            normal: {
+                color: '#0098d9'
+            }
+        }
+    });
+    if (value < 100) {
+        res.push({
+            name: 'Undone',
+            value: 100 - value,
+            itemStyle: {
+                normal: {
+                    color: '#c12e34'
+                }
+            }
+        });
+    }
+    return res;
 };

@@ -8,11 +8,11 @@ var config = {
         global_subtext: 'Global Situation',
         domestic_subtext: 'Domestic Situation',
         textStyle: {
-            fontSize: 20,
+            fontSize: 30,
             fontWeight: 'bold'
         },
         subtextStyle: {
-            fontSize: 16,
+            fontSize: 20,
             fontStyle: 'italic',
             fontWeight: 'lighter'
         }
