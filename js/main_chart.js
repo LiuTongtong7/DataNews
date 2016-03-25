@@ -126,7 +126,7 @@ var globalOption = {
     ]
 };
 
-t
+
 var itemStyle = {
     opacity: 0.8,
     shadowBlur: 10,
