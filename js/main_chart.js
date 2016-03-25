@@ -228,5 +228,29 @@ var domesticOption = {
     series: getSeries(DomesticMarketList)
 };
 
-// echart.setOption(globalOption);
-echart.setOption(domesticOption);
+var page = 0;
+var display = function() {
+    if (page % 2 == 0) {
+        echart.clear();
+        echart.setOption(globalOption);
+    } else {
+        echart.clear();
+        echart.setOption(domesticOption);
+    }
+};
+display();
+
+$('#prev').bind({
+    'click': function() {
+        page -= 1;
+        console.log(page);
+        display();
+    }
+});
+$('#next').bind({
+    'click': function() {
+        page += 1;
+        console.log(page);
+        display();
+    }
+});

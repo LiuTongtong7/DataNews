@@ -17,3 +17,23 @@ body {
     width: 500px;
     height: 300px;
 }
+
+#navigation a {
+    position: absolute;
+    display: block;
+    text-decoration: none;
+    color: #2f2f2f;
+    background-color: transparent;
+    font-size: 50px;
+    height: 50px;
+    top: 50%;
+    margin-top: -25px;
+}
+a#prev {
+    left: 0;
+    padding-left: 30px
+}
+a#next {
+    right: 0;
+    padding-right: 30px
+}

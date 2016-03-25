@@ -452,12 +452,12 @@ var convertDomesticCompositionData = function(name) {
 // 国内碳市场行业的履约率数据
 var ImplementData = {
     'Beijing': 100,
-    'Tianjin': 99.11,
+    'Tianjin': 99.1,
     'Shanghai': 100,
     'Hubei': 100,
     'Chongqing': 70,
     'Guangdong': 100,
-    'Shenzhen': 99.70
+    'Shenzhen': 99.7
 };
 
 var convertImplementData = function(name) {
