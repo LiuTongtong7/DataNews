@@ -2,6 +2,37 @@
  * Created by liutongtong on 3/24/16.
  */
 
+var EU = [
+    'Austria',
+    'Belgium',
+    'Bulgaria',
+    'Cyprus',
+    'Croatia',
+    'CzechRepublic',
+    'Denmark',
+    'Estonia',
+    'Finland',
+    'France',
+    'Germany',
+    'Greece',
+    'Hungary',
+    'Ireland',
+    'Italy',
+    'Latvia',
+    'Lithuania',
+    'Luxembourg',
+    'Malta',
+    'Netherlands',
+    'Poland',
+    'Portugal',
+    'Romania',
+    'Slovakia',
+    'Slovenia',
+    'Spain',
+    'Sweden',
+    'United Kingdom'
+];
+
 var INDCData = [
     ['Afghanistan',0,''],
     ['Albania',11.50,'2016'],
@@ -168,8 +199,16 @@ var INDCData = [
 
 var convertINDC = function(data) {
     var res = [];
-    for (var i = 0; i < data.length; i++) {
-        if (data[i][1]) {
+    for (var i = 0; i < data.length; ++i) {
+        if (data[i][0] == 'European Union (28)') {
+            for (var j = 0; j < EU.length; ++j) {
+                res.push({
+                    name: EU[j],
+                    value: data[i][1],
+                    base: data[i][2]
+                });
+            }
+        } else if (data[i][1]) {
             res.push({
                 name: data[i][0],
                 value: data[i][1],
@@ -178,4 +217,102 @@ var convertINDC = function(data) {
         }
     }
     return res;
+};
+
+var EmissionData = [
+    // ['Switzerland',7.43,46.95,50.75],
+    ['European Union',4.35,50.85,4399.15],
+    ['Kazakhstan',71.05,51.02,290.89],
+    ['South Korea',127,37.58,693.33],
+    ['New Zealand',174.78,-41.28,76.59],
+    ['Japan',139.73,35.68,1344.58],
+    ['South Africa',28.18,-25.71,462.60],
+    ['Chile',-70.67,-33.45,100.73],
+    ['Mexico',-99.15,19.47,723.85]
+];
+
+var convertEmission = function(data) {
+    var res = [];
+    for (var i = 0; i < data.length; ++i) {
+        if (data[i][0] == 'Japan') {
+            res.push({
+                name: data[i][0],
+                value: data[i].slice(1),
+                label: {
+                    normal: {
+                        position: 'right'
+                    }
+                }
+            });
+        } else {
+            res.push({
+                name: data[i][0],
+                value: data[i].slice(1)
+            });
+        }
+    }
+    return res;
+};
+
+var DomesticData = [
+    ['Beijing', 551, 0.47, 1.245, 100],
+    ['Tianjin', 114, 1.6, 0.043, 99.11],
+    ['Shanghai', 310, 0.53, 1.640, 100],
+    ['Hubei', 138, 3.24, 13.338, 100],
+    ['Chongqing', 242, 1.06, 0.132, 70],
+    ['Guangdong', 242, 3.7, 4.795, 100],
+    ['Shenzhen', 635, 0.3, 3.152, 99.70]
+];
+
+var DomesticSchema = [
+    {name: '企业数量', index: 0, text: '企业数量'},
+    {name: '碳市场配额(亿吨)', index: 1, text: '碳市场配额(亿吨)'},
+    {name: '碳市场交易额(MtCO2e)', index: 2, text: '碳市场交易额(MtCO2e)'},
+    {name: '履约率', index: 3, text: '履约率'}
+];
+
+var convertDomestic = function(data, name) {
+    var res = [];
+    for (var i = 0; i < data.length; ++i) {
+        if (name == null || data[i][0] == name) {
+            res.push({
+                name: data[i][0],
+                value: data[i].slice(1)
+            });
+        }
+    }
+    return res;
+};
+
+var SectorList = [
+    '农林牧渔业',
+    '采矿业',
+    '制造业',
+    '电力,热力,燃气及水生产和供应业',
+    '建筑业',
+    '批发和零售业',
+    '交通运输,仓储和邮政业',
+    '住宿和餐饮业',
+    '信息传输,软件和信息技术服务业',
+    '金融业',
+    '房地产业',
+    '租赁和商务服务业',
+    '科学研究和技术服务业',
+    '水利,环境和公共设施管理业',
+    '居民服务,修理和其他服务业',
+    '教育',
+    '卫生和社会工作',
+    '文化,体育和娱乐业',
+    '公共管理,社会保障和社会组织',
+    '国际组织'
+];
+
+var CompositionData = {
+    'Beijing': [0,4,185,46,0,25,11,42,23,35,79,2,11,2,1,53,11,13,8,0],
+    'Tianjin': [0,4,80,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    'Shanghai': [0,0,228,35,0,6,315,0,3,2,0,0,0,0,0,0,0,0,0],
+    'Hubei': [0,0,111,27,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    'Chongqing': [0,5,218,18,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
+    'Guangdong': [0,0,157,85,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    'Shenzhen': [0,0,622,8,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0]
 };

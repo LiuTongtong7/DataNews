@@ -2,12 +2,148 @@
  * Created by liutongtong on 3/23/16.
  */
 
-option = {
-    backgroundColor: '#404a59',
+var config = {
     textStyle: {
-        fontStyle: 'normal',
         fontFamily: 'HelveticaNeue, Helvetica, Arial, Hiragino Sans GB, sans-serif'
     },
+    backgroundColor: '#ffffff',
+    padding: 20
+};
+
+var internationalOption = {
+    backgroundColor: config.backgroundColor,
+    textStyle: config.textStyle,
+    title: {
+        text: 'Carbon Emission Trading: Who is on the stage?',
+        subtext: 'Global Situation',
+        left: 'center',
+        top: 'top',
+        padding: [config.padding, 0, 0, 0]
+    },
+    tooltip : {
+        padding: 10,
+        // backgroundColor: '#222',
+        borderColor: '#777',
+        borderWidth: 1,
+        formatter: function(params) {
+            if (params.seriesName == 'INDC Target') {
+                if (params.data.value) {
+                    return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
+                        + params.seriesName + ': ' + params.data.value + '%<br>'
+                        + 'Base year: ' + params.data.base;
+                }
+                else {
+                    return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
+                        + params.seriesName + ': Empty';
+                }
+            } else if (params.seriesName == 'GHG Emission') {
+                var content = '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
+                    + params.seriesName + ': ' + params.data.value[2] + ' MtCO2e<br>';
+                content += '<iframe frameborder="0" width="400" height="400" src="./index.html" scrolling="no">';
+                return content;
+            }
+        }
+    },
+    visualMap: {
+        min: 0,
+        max: 100,
+        text: ['%', 'INDC Target:'],
+        realtime: false,
+        calculable: true,
+        seriesIndex: 0,
+        inRange: {
+            color: ['#d3d3d3', '#0099d3']
+        },
+        padding: [0, 0, config.padding, 0],
+        orient: 'horizontal',
+        top: 'bottom',
+        left: 'center'
+    },
+    geo: {
+        map: 'world',
+        roam: true,
+        itemStyle: {
+            normal: {
+                areaColor: '#d3d3d3',
+                borderColor: '#ffffff'
+            }
+        }
+    },
+    series : [
+        {
+            name: 'INDC Target',
+            type: 'map',
+            mapType: 'world',
+            roam: true,
+            itemStyle:{
+                normal: {
+                    areaColor: '#d3d3d3',
+                    borderColor: '#ffffff'
+                },
+                emphasis: {
+                    areaColor: null,
+                    borderColor: '#777',
+                    borderWidth: 3
+                }
+            },
+            data: convertINDC(INDCData)
+        },
+        {
+            name: 'GHG Emission',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data: convertEmission(EmissionData),
+            symbolSize: function (val) {
+                return Math.sqrt(val[2]) * 1.5;
+            },
+            label: {
+                normal: {
+                    formatter: '{b}',
+                    position: 'left',
+                    textStyle: {
+                        fontSize: 14,
+                        color: '#333333'
+                    },
+                    show: true
+                }
+            },
+            itemStyle: {
+                normal: {
+                    // color: '#fff'
+                }
+            }
+        }
+    ]
+};
+
+var domesticMarket = ['Beijing', 'Tianjin', 'Shanghai', 'Hubei', 'Chongqing', 'Guangdong', 'Shenzhen'];
+
+var itemStyle = {
+    opacity: 0.8,
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 0,
+    shadowColor: 'rgba(0, 0, 0, 0.5)'
+};
+
+var getSeries = function(namelist) {
+    var res = [];
+    for (var i = 0; i < namelist.length; ++i) {
+        res.push({
+            name: namelist[i],
+            data: convertDomestic(DomesticData, namelist[i]),
+            type: 'scatter',
+            itemStyle: itemStyle,
+            symbolSize: function (val) {
+                return Math.sqrt(val[2]) * 50;
+            },
+            hoverAnimation: true
+        });
+    }
+    return res;
+};
+
+var domesticOption = {
     title: {
         text: '主标题',
         subtext: '副标题',
@@ -22,140 +158,94 @@ option = {
         },
         padding: [20, 0, 0, 0]
     },
-    tooltip : {
-        trigger: 'item',
-        formatter: function(params) {
-            if (params.data.value) {
-                return params.data.name + '<br>'
-                    + params.seriesName + ': ' + params.data.value + '%<br>'
-                    + 'Base year: ' + params.data.base;
-            }
-            else {
-                return params.seriesName + '<br>'
-                    + params.data.name + ': Empty';
-            }
-        }
-    },
-    // legend: {
-    //     orient: 'vertical',
-    //     top: 'bottom',
-    //     left: 'right',
-    //     data: ['各经济体碳排放构成'],
-    //     textStyle: {
-    //         color: '#fff'
-    //     }
-    // },
-    visualMap: {
-        min: 0,
-        max: 100,
-        text: ['%', 'INDEC减排量:'],
-        realtime: false,
-        calculable: true,
-        seriesIndex: 0,
-        inRange: {
-            color: ['#50a3ba', '#eac736', '#d94e5d']
-        },
-        textStyle: {
-            color: '#fff'
-        },
-        padding: [0, 0, 20, 0],
-        orient: 'horizontal',
+    backgroundColor: '#333',
+    legend: {
         top: 'bottom',
-        left: 'right'
-    },
-    // geo: {
-    //     map: 'world',
-    //     label: {
-    //         emphasis: {
-    //             show: false
-    //         }
-    //     },
-    //     roam: true,
-    //     itemStyle: {
-    //         normal: {
-    //             areaColor: '#323c48',
-    //             borderColor: '#111'
-    //         },
-    //         emphasis: {
-    //             areaColor: '#2a333d'
-    //         }
-    //     }
-    // },
-    series : [
-        {
-            name: 'INDC',
-            type: 'map',
-            mapType: 'world',
-            roam: true,
-            itemStyle:{
-                normal: {
-                    areaColor: '#404a59',
-                    borderColor: '#111'
-                },
-                emphasis: {
-                    areaColor: null,
-                    shadowColor: 'rgba(255, 255, 255, 0.5)',
-                    shadowBlur: 10
-                }
-            },
-            data: convertINDC(INDCData)
+        data: domesticMarket,
+        textStyle: {
+            color: '#fff',
+            fontSize: 16
         }
-        // {
-        //     name: 'INDC减排目标',
-        //     type: 'scatter',
-        //     coordinateSystem: 'geo',
-        //     data: convertData(data),
-        //     symbolSize: function (val) {
-        //         return val[2] / 10;
-        //     },
-        //     label: {
-        //         normal: {
-        //             formatter: '{b}',
-        //             position: 'right',
-        //             show: false
-        //         },
-        //         emphasis: {
-        //             show: true
-        //         }
-        //     },
-        //     itemStyle: {
-        //         normal: {
-        //             color: '#ddb926'
-        //         }
-        //     }
-        // },
-        // {
-        //     name: 'Top 5',
-        //     type: 'effectScatter',
-        //     coordinateSystem: 'geo',
-        //     data: convertData(data.sort(function (a, b) {
-        //         return b.value - a.value;
-        //     }).slice(0, 6)),
-        //     symbolSize: function (val) {
-        //         return val[2] / 10;
-        //     },
-        //     showEffectOn: 'render',
-        //     rippleEffect: {
-        //         brushType: 'stroke'
-        //     },
-        //     hoverAnimation: true,
-        //     label: {
-        //         normal: {
-        //             formatter: '{b}',
-        //             position: 'right',
-        //             show: true
-        //         }
-        //     },
-        //     itemStyle: {
-        //         normal: {
-        //             color: '#f4e925',
-        //             shadowBlur: 10,
-        //             shadowColor: '#333'
-        //         }
-        //     },
-        //     zlevel: 1
-        // },
-    ]
+    },
+    grid: {
+        x: '10%',
+        x2: '10%',
+        y: '18%',
+        y2: '10%'
+    },
+    tooltip: {
+        padding: 10,
+        backgroundColor: '#222',
+        borderColor: '#777',
+        borderWidth: 1,
+        formatter: function (params) {
+            var value = params.value;
+            return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                + params.name + '</div>'
+                + DomesticSchema[0].text + '：' + value[0] + '<br>'
+                + DomesticSchema[1].text + '：' + value[1] + '<br>'
+                + DomesticSchema[2].text + '：' + value[2] + '<br>'
+                + DomesticSchema[3].text + '：' + value[3] + '%<br>'
+        }
+    },
+    xAxis: {
+        type: 'value',
+        name: '企业数量',
+        nameGap: 16,
+        nameTextStyle: {
+            color: '#fff',
+            fontSize: 16
+        },
+        splitLine: {
+            show: false
+        },
+        axisLine: {
+            lineStyle: {
+                color: '#777'
+            }
+        },
+        axisTick: {
+            lineStyle: {
+                color: '#777'
+            }
+        },
+        axisLabel: {
+            formatter: '{value}',
+            textStyle: {
+                color: '#fff'
+            }
+        }
+    },
+    yAxis: {
+        type: 'value',
+        name: '碳配额',
+        nameLocation: 'end',
+        nameGap: 20,
+        nameTextStyle: {
+            color: '#fff',
+            fontSize: 16
+        },
+        axisLine: {
+            lineStyle: {
+                color: '#777'
+            }
+        },
+        axisTick: {
+            lineStyle: {
+                color: '#777'
+            }
+        },
+        splitLine: {
+            show: false
+        },
+        axisLabel: {
+            textStyle: {
+                color: '#fff'
+            }
+        }
+    },
+    series: getSeries(domesticMarket)
 };
 
-echart.setOption(option);
+echart.setOption(internationalOption);
+// echart.setOption(domesticOption);
