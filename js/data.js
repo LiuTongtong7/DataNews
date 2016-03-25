@@ -2,6 +2,7 @@
  * Created by liutongtong on 3/24/16.
  */
 
+// INDC数据部分
 var EU = [
     'Austria',
     'Belgium',
@@ -197,7 +198,7 @@ var INDCData = [
     ['Zimbabwe',33,'BAU']
 ];
 
-var convertINDC = function(data) {
+var convertINDCData = function(data) {
     var res = [];
     for (var i = 0; i < data.length; ++i) {
         if (data[i][0] == 'European Union (28)') {
@@ -219,9 +220,10 @@ var convertINDC = function(data) {
     return res;
 };
 
-var EmissionData = [
+// 全球主要碳市场排放数据
+var GlobalMarketData = [
     // ['Switzerland',7.43,46.95,50.75],
-    ['European Union',4.35,50.85,4399.15],
+    ['European Union (28)',4.35,50.85,4399.15],
     ['Kazakhstan',71.05,51.02,290.89],
     ['South Korea',127,37.58,693.33],
     ['New Zealand',174.78,-41.28,76.59],
@@ -231,7 +233,7 @@ var EmissionData = [
     ['Mexico',-99.15,19.47,723.85]
 ];
 
-var convertEmission = function(data) {
+var convertGlobalMarketData = function(data) {
     var res = [];
     for (var i = 0; i < data.length; ++i) {
         if (data[i][0] == 'Japan') {
@@ -254,7 +256,10 @@ var convertEmission = function(data) {
     return res;
 };
 
-var DomesticData = [
+// 国内碳市场试点数据
+var DomesticMarketList = ['Beijing', 'Tianjin', 'Shanghai', 'Hubei', 'Chongqing', 'Guangdong', 'Shenzhen'];
+
+var DomesticMarketData = [
     ['Beijing', 551, 0.47, 1.245, 100],
     ['Tianjin', 114, 1.6, 0.043, 99.11],
     ['Shanghai', 310, 0.53, 1.640, 100],
@@ -271,7 +276,7 @@ var DomesticSchema = [
     {name: '履约率', index: 3, text: '履约率'}
 ];
 
-var convertDomestic = function(data, name) {
+var convertDomesticMarketData = function(data, name) {
     var res = [];
     for (var i = 0; i < data.length; ++i) {
         if (name == null || data[i][0] == name) {
@@ -284,6 +289,56 @@ var convertDomestic = function(data, name) {
     return res;
 };
 
+// 全球主要谈市场的覆盖范围
+var GlobalCompositionData = {
+    'Mexico': [0, 48, 0],
+    'Chile': [0, 42, 0],
+    'South Africa': [0, 80, 0],
+    'European Union (28)': [41, 7, 4],
+    'Kazakhstan': [55, 0, 0],
+    'South Korea': [66, 0, 0],
+    'Japan': [0, 66, 0],
+    'New Zealand': [54, 0, 0],
+    'Beijing': [40, 0, 0],
+    'Tianjin': [60, 0, 0],
+    'Shanghai': [50, 0, 0],
+    'Hubei': [35, 0, 0],
+    'Chongqing': [40, 0, 0],
+    'Guangdong': [60, 0, 0],
+    'Shenzhen': [40, 0, 0],
+    'California': [85, 0, 0],
+    'British Columbia': [0, 70, 0],
+    'Alberta': [43, 0, 0],
+    'RGGI': [21, 0, 0],
+    'Quebec': [85, 0, 0]
+};
+
+var convertGlobalCompostionData = function(name) {
+    if (name in GlobalCompositionData) {
+        var res = [];
+        var value = GlobalCompositionData[name][0];
+        if (value > 0) {
+            res.push({name: 'ETS', value: value});
+        }
+        value = GlobalCompositionData[name][1];
+        if (value > 0) {
+            res.push({name: 'Carbon Tax', value: value});
+        }
+        value = GlobalCompositionData[name][2];
+        if (value > 0) {
+            res.push({name: 'Both', value: value});
+        }
+        value = 100 - GlobalCompositionData[name][0] - GlobalCompositionData[name][1] - GlobalCompositionData[name][2];
+        if (value > 0) {
+            res.push({name: 'Other', value: value});
+        }
+        return res;
+    } else {
+        return [];
+    }
+};
+
+// 国内碳市场行业的覆盖范围
 var SectorList = [
     '农林牧渔业',
     '采矿业',

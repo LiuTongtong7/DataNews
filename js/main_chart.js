@@ -7,10 +7,16 @@ var config = {
         fontFamily: 'HelveticaNeue, Helvetica, Arial, Hiragino Sans GB, sans-serif'
     },
     backgroundColor: '#ffffff',
-    padding: 20
+    padding: 20,
+    tooltip: {
+        padding: 10,
+        backgroundColor: '#ffffff',
+        borderColor: '#777',
+        borderWidth: 1
+    }
 };
 
-var internationalOption = {
+var globalOption = {
     backgroundColor: config.backgroundColor,
     textStyle: config.textStyle,
     title: {
@@ -21,25 +27,29 @@ var internationalOption = {
         padding: [config.padding, 0, 0, 0]
     },
     tooltip : {
-        padding: 10,
-        // backgroundColor: '#222',
-        borderColor: '#777',
-        borderWidth: 1,
+        padding: config.tooltip.padding,
+        backgroundColor: config.tooltip.backgroundColor,
+        borderColor: config.tooltip.borderColor,
+        borderWidth: config.tooltip.borderWidth,
+        textStyle: {
+            color: '#333'
+        },
         formatter: function(params) {
             if (params.seriesName == 'INDC Target') {
                 if (params.data.value) {
-                    return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
+                    return '<div style="border-bottom: 1px solid rgba(0,0,0,.7); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
                         + params.seriesName + ': ' + params.data.value + '%<br>'
                         + 'Base year: ' + params.data.base;
                 }
                 else {
-                    return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
+                    return '<div style="border-bottom: 1px solid rgba(0,0,0,.7); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
                         + params.seriesName + ': Empty';
                 }
             } else if (params.seriesName == 'GHG Emission') {
-                var content = '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
+                var content = '<div style="border-bottom: 1px solid rgba(0,0,0,.7); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' + params.data.name + '</div>'
                     + params.seriesName + ': ' + params.data.value[2] + ' MtCO2e<br>';
-                content += '<iframe frameborder="0" width="400" height="400" src="./index.html" scrolling="no">';
+                content += '<iframe frameborder="0" width="400" height="250" src="./global.html?region=' + params.data.name + '" scrolling="no"' +
+                    ' allowTransparency="true">';
                 return content;
             }
         }
@@ -51,9 +61,9 @@ var internationalOption = {
         realtime: false,
         calculable: true,
         seriesIndex: 0,
-        inRange: {
-            color: ['#d3d3d3', '#0099d3']
-        },
+        // inRange: {
+        //     color: ['#a2d4e6', '#1790cf']
+        // },
         padding: [0, 0, config.padding, 0],
         orient: 'horizontal',
         top: 'bottom',
@@ -86,13 +96,13 @@ var internationalOption = {
                     borderWidth: 3
                 }
             },
-            data: convertINDC(INDCData)
+            data: convertINDCData(INDCData)
         },
         {
             name: 'GHG Emission',
             type: 'scatter',
             coordinateSystem: 'geo',
-            data: convertEmission(EmissionData),
+            data: convertGlobalMarketData(GlobalMarketData),
             symbolSize: function (val) {
                 return Math.sqrt(val[2]) * 1.5;
             },
@@ -107,16 +117,15 @@ var internationalOption = {
                     show: true
                 }
             },
-            itemStyle: {
-                normal: {
-                    // color: '#fff'
-                }
-            }
+            // itemStyle: {
+            //     normal: {
+            //         color: '#444444'
+            //     }
+            // }
         }
     ]
 };
 
-var domesticMarket = ['Beijing', 'Tianjin', 'Shanghai', 'Hubei', 'Chongqing', 'Guangdong', 'Shenzhen'];
 
 var itemStyle = {
     opacity: 0.8,
@@ -131,7 +140,7 @@ var getSeries = function(namelist) {
     for (var i = 0; i < namelist.length; ++i) {
         res.push({
             name: namelist[i],
-            data: convertDomestic(DomesticData, namelist[i]),
+            data: convertDomesticMarketData(DomesticMarketData, namelist[i]),
             type: 'scatter',
             itemStyle: itemStyle,
             symbolSize: function (val) {
@@ -161,7 +170,7 @@ var domesticOption = {
     backgroundColor: '#333',
     legend: {
         top: 'bottom',
-        data: domesticMarket,
+        data: DomesticMarketList,
         textStyle: {
             color: '#fff',
             fontSize: 16
@@ -244,8 +253,8 @@ var domesticOption = {
             }
         }
     },
-    series: getSeries(domesticMarket)
+    series: getSeries(DomesticMarketList)
 };
 
-echart.setOption(internationalOption);
+echart.setOption(globalOption);
 // echart.setOption(domesticOption);
